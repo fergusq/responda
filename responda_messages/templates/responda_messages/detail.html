@@ -36,7 +36,7 @@
 	</div>
 	{% if user.is_authenticated %}
 		<h2>Uusi vastaus</h2>
-		<form action="/messages/reply/{{ message.id }}/" method="POST" class="post-form">{% csrf_token %}
+		<form action="/messages/{{ message.id }}/reply/" method="POST" class="post-form">{% csrf_token %}
 			{{ form.as_p }}
 			<button type="submit" class="save btn btn-default">Lähetä!</button>
 		</form>

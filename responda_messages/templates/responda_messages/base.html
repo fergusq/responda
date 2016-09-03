@@ -17,10 +17,10 @@
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						{% if not user.is_authenticated %}
-							<li><a href="/messages/login/">Kirjaudu sisään</a></li>
-							<li><a href="/messages/register/">Luo tunnus</a></li>
+							<li><a href="/login/">Kirjaudu sisään</a></li>
+							<li><a href="/register/">Luo tunnus</a></li>
 						{% else %}
-							<li><a href="/messages/logout/">Kirjaudu ulos</a></li>
+							<li><a href="/logout/">Kirjaudu ulos</a></li>
 						{% endif %}
 					</ul>
 				</div>

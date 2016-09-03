@@ -19,7 +19,7 @@ from .forms import ReplyForm
 # Create your views here.
 
 def index(request):
-	return HttpResponse("Hei hei, viesteistä!")
+	return redirect('/messages/1/')
 
 def detail(request, msg_id):
 	try:
