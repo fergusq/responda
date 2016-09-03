@@ -7,7 +7,7 @@
 				<p class="list-group-item-heading">
 					<span class="text-right" style="float:right;">{{ message.parent_message.pub_date }}</span>
 					<b>{{ message.parent_message.author.first_name }} {{ message.parent_message.author.last_name }}</b>
-					@{{ message.parent_message.author.username }}
+					&sdot; @{{ message.parent_message.author.username }}
 				</p>
 				<p class="list-group-item-text">{{ message.parent_message.message_text|truncatechars:"100" }}</p>
 			</a>
@@ -16,7 +16,7 @@
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<p class="text-right" style="float:right;">{{ message.pub_date }}</p>
-			<b>{{ message.author.first_name }} {{ message.author.last_name }}</b> @{{ message.author.username }}
+			<b>{{ message.author.first_name }} {{ message.author.last_name }}</b> &sdot; @{{ message.author.username }}
 		</div>
 		<div class="panel-body">{{ msg_text|safe }}</div>
 		<ul class="list-group">
@@ -25,7 +25,7 @@
 					<p class="list-group-item-heading">
 						<span class="text-right" style="float:right;">{{ reply.pub_date }}</span>
 						<b>{{ reply.author.first_name }} {{ reply.author.last_name }}</b>
-						@{{ reply.author.username }}
+						&sdot; @{{ reply.author.username }}
 					</p>
     					<span class="badge">{{ reply.num_replies }}</span>
     					<p class="list-group-item-text">{{ reply.message_text|truncatechars:"100" }}</p>
