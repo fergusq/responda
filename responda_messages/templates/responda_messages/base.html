@@ -20,6 +20,9 @@
 							<li><a href="/login/">Kirjaudu sisään</a></li>
 							<li><a href="/register/">Luo tunnus</a></li>
 						{% else %}
+							<li>
+								<p class="navbar-text"><b>{{ user.first_name }} {{ user.last_name }}</b> @{{ user.username }}</p>
+							</li>
 							<li><a href="/logout/">Kirjaudu ulos</a></li>
 						{% endif %}
 					</ul>

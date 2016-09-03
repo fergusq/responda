@@ -11,7 +11,7 @@
 		</div>
 	{% endif %}
 
-	<form action="/messages/login/" method="POST">
+	<form action="/login/" method="POST">
 		{% csrf_token %}
 		<div class="form-group{% if invalidlogin %} has-error{% endif %}">
 			<label for="username">Käyttäjätunnus</label>
