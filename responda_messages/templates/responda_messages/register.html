@@ -1,0 +1,42 @@
+{% extends 'responda_messages/base.html' %}
+
+{% block content %}
+
+	<h1>Rekisteröidy</h1>
+	
+	{% if registration_error %}
+		<div class="panel panel-danger">
+			<div class="panel-heading">Rekisteröityminen epäonnistui</div>
+			<div class="panel-body">{{ registration_error }}</div>
+		</div>
+	{% endif %}
+
+	<form action="/messages/register/" method="POST">
+		{% csrf_token %}
+		<div class="form-group{% ifequal error_reason 'username' %} has-error{% endifequal %}">
+			<label for="username">Käyttäjätunnus</label>
+			<div class="input-group">
+				<span class="input-group-addon" id="basic-addon1">@</span>
+				<input type="text" class="form-control" name="username" placeholder="Käyttäjätunnus" {% if registration_error %} value="{{ given_username }}"{% endif %}/>
+			</div>
+		</div>
+		<div class="form-group{% ifequal error_reason 'password' %} has-error{% endifequal %}">
+			<label for="password">Salasana</label>
+			<input type="password" class="form-control" name="password" placeholder="Salasana" />
+		</div>
+		<div class="form-group{% ifequal error_reason 'email' %} has-error{% endifequal %}">
+			<label for="email">Sähköposti</label>
+			<input type="email" class="form-control" name="email" placeholder="Sähköposti" {% if registration_error %} value="{{ given_email }}"{% endif %}/>
+		</div>
+		<div class="form-group{% ifequal error_reason 'first_name' %} has-error{% endifequal %}">
+			<label for="first_name">Etunimi</label>
+			<input type="text" class="form-control" minsize="1" name="first_name" placeholder="Etunimi" {% if registration_error %} value="{{ given_first_name }}"{% endif %}/>
+		</div>
+		<div class="form-group{% ifequal error_reason 'last_name' %} has-error{% endifequal %}">
+			<label for="last_name">Sukunimi</label>
+			<input type="text" class="form-control" name="last_name" placeholder="Sukunimi" {% if registration_error %} value="{{ given_last_name }}"{% endif %}/>
+		</div>
+		<button type="submit" class="btn btn-default">Rekisteröidy!</button>
+	</form>
+
+{% endblock %}

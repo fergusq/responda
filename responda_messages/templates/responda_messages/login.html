@@ -1,0 +1,30 @@
+{% extends 'responda_messages/base.html' %}
+
+{% block content %}
+
+	<h1>Kirjaudu sisään</h1>
+	
+	{% if invalidlogin %}
+		<div class="panel panel-danger">
+			<div class="panel-heading">Kirjautuminen epäonnistui</div>
+			<div class="panel-body">Tarkista, että antamasi käyttäjätunnus ja salasana on kirjoitettu oikein.</div>
+		</div>
+	{% endif %}
+
+	<form action="/messages/login/" method="POST">
+		{% csrf_token %}
+		<div class="form-group{% if invalidlogin %} has-error{% endif %}">
+			<label for="username">Käyttäjätunnus</label>
+			<div class="input-group">
+				<span class="input-group-addon" id="basic-addon1">@</span>
+				<input type="text" class="form-control" name="username" placeholder="Käyttäjätunnus" {% if invalidlogin %} value="{{ given_username }}"{% endif %}/>
+			</div>
+		</div>
+		<div class="form-group{% if invalidlogin %} has-error{% endif %}">
+			<label for="password">Salasana</label>
+			<input type="password" class="form-control" name="password" placeholder="Salasana" />
+		</div>
+		<button type="submit" class="btn btn-default">Kirjaudu sisään!</button>
+	</form>
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'responda_messages/base.html' %}
+
+{% block content %}
+	{% if message.parent_message is not None %}
+		<ul class="list-group">
+			<a href="/messages/{{ message.parent_message.id }}/" class="list-group-item">
+				<p class="list-group-item-heading">
+					<span class="text-right" style="float:right;">{{ message.parent_message.pub_date }}</span>
+					<b>{{ message.parent_message.author.first_name }} {{ message.parent_message.author.last_name }}</b>
+					@{{ message.parent_message.author.username }}
+				</p>
+				<p class="list-group-item-text">{{ message.parent_message.message_text|truncatechars:"100" }}</p>
+			</a>
+		</ul>
+	{% endif %}
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<p class="text-right" style="float:right;">{{ message.pub_date }}</p>
+			<b>{{ message.author.first_name }} {{ message.author.last_name }}</b> @{{ message.author.username }}
+		</div>
+		<div class="panel-body">{{ msg_text|safe }}</div>
+		<ul class="list-group">
+			{% for reply in replies %}
+				<a href="/messages/{{ reply.id }}/" class="list-group-item">
+					<p class="list-group-item-heading">
+						<span class="text-right" style="float:right;">{{ reply.pub_date }}</span>
+						<b>{{ reply.author.first_name }} {{ reply.author.last_name }}</b>
+						@{{ reply.author.username }}
+					</p>
+    					<span class="badge">{{ reply.num_replies }}</span>
+    					<p class="list-group-item-text">{{ reply.message_text|truncatechars:"100" }}</p>
+					
+				</a>
+			{% endfor %}
+		</ul>
+	</div>
+	{% if user.is_authenticated %}
+		<h2>Uusi vastaus</h2>
+		<form action="/messages/reply/{{ message.id }}/" method="POST" class="post-form">{% csrf_token %}
+			{{ form.as_p }}
+			<button type="submit" class="save btn btn-default">Lähetä!</button>
+		</form>
+	{% endif %}
+{% endblock %}
