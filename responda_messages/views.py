@@ -76,7 +76,8 @@ def register(request):
 		except User.DoesNotExist:
 			user = User.objects.create_user(username, email, password)
 			user.first_name = first_name
-			user.last_name = last_name
+			if len(last_name) > 0: user.last_name = last_name
+			user.save()
 			auth_login(request, user)
 			return redirect('/messages/1/')
 		return registration_error('Käyttäjätunnus on varattu.', 'username')
