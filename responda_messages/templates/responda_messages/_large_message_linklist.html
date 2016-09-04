@@ -1,14 +1,24 @@
 <ul class="list-group">
 	{% for reply in replies %}
-		<a href="/messages/{{ reply.id }}/" class="list-group-item">
-			<p class="list-group-item-heading">
-				<span class="text-right" style="float:right;">{{ reply.pub_date }}</span>
-				<b>{{ reply.author.first_name }} {{ reply.author.last_name }}</b>
-				&sdot; @{{ reply.author.username }}
-			</p>
-			<span class="badge">{{ reply.num_replies }}</span>
-			<p class="list-group-item-text">{{ reply.message_text|truncatechars:"500" }}</p>
-			
-		</a>
+		{% if reply.deleted %}
+			<li class="list-group-item">
+				<p class="list-group-item-heading">
+					<span class="text-right" style="float:right;">{{ reply.pub_date }}</span>
+					<b>{{ reply.author.first_name }} {{ reply.author.last_name }}</b>
+					&sdot; @{{ reply.author.username }}
+				</p>
+				<p class="list-group-item-text"><i>Tämä viesti on poistettu.</i></p>
+			</li>
+		{% else %}
+			<a href="/messages/{{ reply.id }}/" class="list-group-item">
+				<p class="list-group-item-heading">
+					<span class="text-right" style="float:right;">{{ reply.pub_date }}</span>
+					<b>{{ reply.author.first_name }} {{ reply.author.last_name }}</b>
+					&sdot; @{{ reply.author.username }}
+				</p>
+				<span class="badge">{{ reply.num_replies }}</span>
+				<p class="list-group-item-text">{{ reply.message_text|truncatechars:"500" }}</p>
+			</a>
+		{% endif %}
 	{% endfor %}
 </ul>

@@ -6,19 +6,37 @@
 {% endblock %}
 
 {% block content %}
-	{% with replies=message.parent_message.all %}
-		{% include 'responda_messages/_large_message_linklist.html' %}
-	{% endwith %}
+	{% if message.deleted %}
+		<div class="panel panel-danger">
+			<div class="panel-heading">
+				Tämä viesti on poistettu.
+			</div>
+			<div class="panel-body message-text">
+				Tämä viesti on vastaus alla lueteltuihin viesteihin. Joku näiden viestin kirjoittajista on poistanut tämän viestin.
+			</div>
+	{% endif %}
+		{% with replies=message.parent_message.all %}
+			{% include 'responda_messages/_large_message_linklist.html' %}
+		{% endwith %}
+	{% if message.deleted %}</div>{% endif %}
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<p class="text-right" style="float:right;">{{ message.pub_date }}</p>
 			<b>{{ message.author.first_name }} {{ message.author.last_name }}</b> &sdot; @{{ message.author.username }}
 		</div>
-		<div class="panel-body">{{ msg_text|safe }}</div>
+		<div class="panel-body message-text">{{ msg_text|safe }}</div>
 		{% include 'responda_messages/_large_message_linklist.html' %}
 	</div>
 	{% if user.is_authenticated %}
-		<a class="btn btn-default" href="/messages/{{ message.id }}/select/" role="button">Valitse viesti</a>
+		<div class="btn-group" role="group" aria-label="...">
+			<a class="btn btn-default" href="/messages/{{ message.id }}/select/" role="button">Valitse viesti</a>
+			{% if deletable %}
+				{% if not message.deleted %}
+					<a class="btn btn-default" href="/messages/{{ message.id }}/delete/" role="button">Poista viesti</a>
+				{% endif %}
+			{% endif %}
+		</div>
+		
 		<h2>Uusi vastaus</h2>
 		<form action="/messages/{{ message.id }}/reply/" method="POST" class="post-form">{% csrf_token %}
 			{{ form.as_p }}

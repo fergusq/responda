@@ -10,6 +10,7 @@ class Message(models.Model):
 	pub_date = models.DateTimeField('date published')
 	author = models.ForeignKey(AUTH_USER_MODEL)
 	parent_message = models.ManyToManyField('self', related_name='replies', symmetrical=False)
+	deleted = models.BooleanField(default=False)
 
 	def __str__(self):
 		return '"' + (self.message_text if len(self.message_text) < 30 else self.message_text[:30] + '...') + '"'

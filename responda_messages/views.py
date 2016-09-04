@@ -17,6 +17,7 @@ def compileMd(text):
 		'b', 'blockquote',
 		'code',
 		'em',
+		'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
 		'i', 'img',
 		'li',
 		'ol',
@@ -34,6 +35,13 @@ def getReplies(request):
 def getSelected(request):
 	return [] if 'selected_messages' not in request.session else Message.objects.filter(pk__in=request.session['selected_messages']).annotate(num_replies=Count('replies'))
 
+def isDeletable(request, msg):
+	deletable = msg.author == request.user
+	for parent in msg.parent_message.all():
+		if parent.author == request.user:
+			deletable = True
+	return deletable
+
 # Create your views here.
 
 def index(request):
@@ -43,21 +51,24 @@ def detail(request, msg_id):
 	try:
 		msg = Message.objects.get(pk=msg_id)
 	except Message.DoesNotExist:
-		raise Http404("Message does not exist")
-	replies = Message.objects.filter(parent_message=msg).annotate(num_replies=Count('replies')).order_by('-num_replies', '-pub_date')
+		return render(request, 'responda_messages/msg_not_found.html') # TODO: tuota virhekoodi
+	replies = Message.objects.filter(parent_message=msg).annotate(num_replies=Count('replies')).order_by('deleted', '-num_replies', '-pub_date')
 	
 	if request.user.is_authenticated:
 		newest_replies = getReplies(request)[:5]
 	else:
 		newest_replies = []
 	
-	popular_messages = Message.objects.annotate(num_replies=Count('replies')).order_by('-num_replies', '-pub_date')[:5]
+	popular_messages = Message.objects.annotate(num_replies=Count('replies')).order_by('deleted', '-num_replies', '-pub_date')[:5]
 	selected_messages = getSelected(request)
+	
+	deletable = isDeletable(request, msg)
 	
 	form = ReplyForm()
 	return render(request, 'responda_messages/detail.html', {
 		'message': msg,
 		'msg_text': compileMd(msg.message_text),
+		'deletable': deletable,
 		'replies': replies,
 		'newest_replies': newest_replies,
 		'popular_messages': popular_messages,
@@ -90,6 +101,8 @@ def clearselected(request):
 def replyselected(request):
 	if 'selected_messages' not in request.session or len(request.session['selected_messages']) == 0:
 		raise Http404('invalid use of the reply selected action')
+	if len(request.session['selected_messages']) == 1:
+		return redirect('/messages/'+request.session['selected_messages'][0]+'/')
 	if request.method == "POST":
 		form = ReplyForm(request.POST)
 		if form.is_valid():
@@ -117,17 +130,29 @@ def reply(request, msg_id):
 	try:
 		parent_msg = Message.objects.get(pk=msg_id)
 	except Message.DoesNotExist:
-		raise Http404("message does not exist")
+		return render(request, 'responda_messages/msg_not_found.html') # TODO: tuota virhekoodi
 	if request.method == "POST":
 		form = ReplyForm(request.POST)
 		if form.is_valid():
 			msg = form.save(commit=False)
 			msg.author = request.user
 			msg.pub_date = timezone.now()
+			msg.save()
 			msg.parent_message.add(parent_msg)
 			msg.save()
 			return redirect('/messages/'+msg_id+'/')
 	raise Http404('invalid use of the reply action')
+
+@login_required
+def delete(request, msg_id):
+	try:
+		msg = Message.objects.get(pk=msg_id)
+	except Message.DoesNotExist:
+		return render(request, 'responda_messages/msg_not_found.html') # TODO: tuota virhekoodi
+	if isDeletable(request, msg):
+		msg.deleted=True
+		msg.save()
+	return redirect('/messages/'+msg_id+'/')
 
 def register(request):
 	if request.method == "POST" and not request.user.is_authenticated:
