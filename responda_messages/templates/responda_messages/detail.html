@@ -3,6 +3,11 @@
 {% block extra_head %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<style>
+.CodeMirror {
+    height: 300px;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -30,6 +35,9 @@
 	{% if user.is_authenticated %}
 		<div class="btn-group" role="group" aria-label="...">
 			<a class="btn btn-default" href="/messages/{{ message.id }}/select/" role="button">Valitse viesti</a>
+			{% ifequal message.author user %}
+				<a class="btn btn-default" href="/messages/{{ message.id }}/edit/" role="button">Muokkaa viestiä</a>
+			{% endifequal %}
 			{% if deletable %}
 				{% if not message.deleted %}
 					<a class="btn btn-default" href="/messages/{{ message.id }}/delete/" role="button">Poista viesti</a>

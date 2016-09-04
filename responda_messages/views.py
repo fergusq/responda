@@ -154,6 +154,21 @@ def delete(request, msg_id):
 		msg.save()
 	return redirect('/messages/'+msg_id+'/')
 
+@login_required
+def edit(request, msg_id):
+	try:
+		msg = Message.objects.get(pk=msg_id)
+	except Message.DoesNotExist:
+		return render(request, 'responda_messages/msg_not_found.html') # TODO: tuota virhekoodi
+	if msg.author == request.user and request.method == "POST":
+		msg.message_text = request.POST['message_text']
+		msg.save()
+		return redirect('/messages/'+msg_id+'/')
+	return render(request, 'responda_messages/edit.html', {
+		'msg_id': msg_id,
+		'msg_text': msg.message_text
+		})
+
 def register(request):
 	if request.method == "POST" and not request.user.is_authenticated:
 		username = request.POST['username']

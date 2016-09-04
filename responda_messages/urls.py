@@ -6,6 +6,7 @@ urlpatterns = [
 	url(r'^$', views.index, name='index'),
 	url(r'^messages/(?P<msg_id>[0-9]+)/$', views.detail, name='detail'),
 	url(r'^messages/(?P<msg_id>[0-9]+)/reply/$', views.reply, name='reply'),
+	url(r'^messages/(?P<msg_id>[0-9]+)/edit/$', views.edit, name='edit'),
 	url(r'^messages/(?P<msg_id>[0-9]+)/delete/$', views.delete, name='delete'),
 	url(r'^messages/(?P<msg_id>[0-9]+)/select/$', views.select, name='select'),
 	url(r'^selected/clear/$', views.clearselected, name='clearselected'),

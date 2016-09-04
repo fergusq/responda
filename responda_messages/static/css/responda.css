@@ -6,11 +6,6 @@
 	transition: 0s;
 }
 
-.CodeMirror, .CodeMirror-scroll {
-	min-height: 100px;
-	height: 200px;
-}
-
 .panel-ablue {
 	border-color: #6A6FFA;
 }

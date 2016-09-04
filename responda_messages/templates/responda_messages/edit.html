@@ -1,0 +1,64 @@
+{% extends 'responda_messages/base.html' %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+{% endblock %}
+
+{% block content %}
+	<form action="/messages/{{ msg_id }}/edit/" method="POST" class="post-form">{% csrf_token %}
+		<textarea id="id_message_text" name="message_text">{{ msg_text }}</textarea>
+		<button type="submit" class="save btn btn-default">Tallenna</button>
+	</form>
+	<script>
+	var simplemde = new SimpleMDE({
+		element: document.getElementById("id_message_text"),
+		forceSync: true,
+		spellChecker: false
+	});
+	</script>
+{% endblock %}
+
+{% block leftcontent %}
+	<div class="panel panel-ablue">
+		<div class="panel-heading">
+			Viestin muokkaaminen
+		</div>
+		<div class="panel-body">
+			Voit halutessasi myös tyhjentää viestin, mikä tuhoaa lopullisesti viestin sisällön. Muista merkitä viesti myös poistetuksi.
+		</div>
+	</div>
+{% endblock %}
+
+{% block rightcontent %}
+	<div class="panel panel-ablue">
+		<div class="panel-heading">
+			Muotoiluohje
+		</div>
+		<div class="panel-body">
+			<p><b>Tekstin korostus</b></p>
+			<ul>
+			<li><b>Lihavointi</b> <code>**sana**</code> tai <code>__sana__</code></li>
+			<li><i>Kursivointi</i> <code>*sana*</code> tai <code>_sana_</code></li>
+			<li><s>Yliveto</s> <code>~~sana~~</code></li>
+			</ul>
+			<p><b>Otsikot</b></p>
+			<pre># Yläotsikko
+## Väliotsikko
+### Alaotsikko
+#### Ala-alaotsikko
+</pre>
+			<p><b>Listat</b></p>
+			<pre>* Kohta
+* Toinen kohta
+
+1. Numeroitu kohta
+2. Toinen numeroitu kohta
+</pre>
+			<p><b>Linkit</b></p>
+			<pre>[näytettävä teksti](http://sivunosoite/)</pre>
+			<p><b>Lainaukset</b></p>
+			<pre>&gt; Lainattava teksti</pre>
+		</div>
+	</div>
+{% endblock %}
