@@ -1,0 +1,51 @@
+{% extends 'responda_messages/base.html' %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+{% endblock %}
+
+{% block content %}
+	<div class="panel panel-ablue">
+		<div class="panel-heading">
+			Vastaa valittuihin viesteihin
+		</div>
+		<div class="panel-body">
+			Aiot vastata useampaan kuin yhteen viestiin. Näet valitut viestit oikealla.
+		</div>
+	</div>
+	<h2>Uusi vastaus</h2>
+	<form action="/selected/reply/" method="POST" class="post-form">{% csrf_token %}
+		{{ form.as_p }}
+		<button type="submit" class="save btn btn-default">Lähetä!</button>
+	</form>
+	<script>
+	var simplemde = new SimpleMDE({
+		element: document.getElementById("id_message_text"),
+		forceSync: true,
+		spellChecker: false
+	});
+	</script>
+{% endblock %}
+
+{% block leftcontent %}
+	<div class="panel panel-ablue">
+		<div class="panel-heading">
+			Uusimmat vastaukset
+		</div>
+		{% with replies=newest_replies %}
+		{% include 'responda_messages/_small_message_linklist.html' %}
+		{% endwith %}
+	</div>
+{% endblock %}
+
+{% block rightcontent %}
+	<div class="panel panel-ablue">
+		<div class="panel-heading">
+			Valitut viestit
+		</div>
+		{% with replies=selected_messages %}
+		{% include 'responda_messages/_small_message_linklist.html' %}
+		{% endwith %}
+	</div>
+{% endblock %}

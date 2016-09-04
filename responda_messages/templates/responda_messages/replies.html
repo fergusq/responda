@@ -1,0 +1,13 @@
+{% extends 'responda_messages/base.html' %}
+
+{% block content %}
+	<div class="panel panel-ablue">
+		<div class="panel-heading">
+			Uusimmat vastaukset
+		</div>
+		<div class="panel-body">
+			Uusimmat vastaukset sinun viesteihisi:
+		</div>
+		{% include 'responda_messages/_large_message_linklist.html' %}
+	</div>
+{% endblock %}
