@@ -26,12 +26,14 @@ def detail(request, msg_id):
 		msg = Message.objects.get(pk=msg_id)
 	except Message.DoesNotExist:
 		raise Http404("Message does not exist")
-	replies = Message.objects.filter(parent_message=msg).annotate(num_replies=Count('replies')).order_by('-pub_date').order_by('-num_replies')
+	replies = Message.objects.filter(parent_message=msg).annotate(num_replies=Count('replies')).order_by('-num_replies', '-pub_date')
 	
 	if request.user.is_authenticated:
-		newest_replies = Message.objects.exclude(author=request.user).filter(parent_message__author=request.user).order_by('-pub_date')[:5]
+		newest_replies = Message.objects.exclude(author=request.user).filter(parent_message__author=request.user).annotate(num_replies=Count('replies')).order_by('-pub_date')[:5]
 	else:
 		newest_replies = []
+	
+	popular_messages = Message.objects.annotate(num_replies=Count('replies')).order_by('-num_replies', '-pub_date')[:5]
 	
 	form = ReplyForm()
 	return render(request, 'responda_messages/detail.html', {
@@ -39,6 +41,7 @@ def detail(request, msg_id):
 		'msg_text': compileMd(msg.message_text),
 		'replies': replies,
 		'newest_replies': newest_replies,
+		'popular_messages': popular_messages,
 		'form': form
 		})
 

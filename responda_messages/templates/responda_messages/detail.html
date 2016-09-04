@@ -1,5 +1,10 @@
 {% extends 'responda_messages/base.html' %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+{% endblock %}
+
 {% block content %}
 	{% if message.parent_message is not None %}
 		<ul class="list-group">
@@ -40,6 +45,13 @@
 			{{ form.as_p }}
 			<button type="submit" class="save btn btn-default">Lähetä!</button>
 		</form>
+		<script>
+		var simplemde = new SimpleMDE({
+			element: document.getElementById("id_message_text"),
+			forceSync: true,
+			spellChecker: false
+		});
+		</script>
 	{% endif %}
 {% endblock %}
 
@@ -52,12 +64,12 @@
 			<ul class="list-group">
 				{% for reply in newest_replies %}
 					<a href="/messages/{{ reply.id }}/" class="list-group-item">
+	    					<span class="badge">{{ reply.num_replies }}</span>
 						<p class="list-group-item-heading">
 							<b>{{ reply.author.first_name }} {{ reply.author.last_name }}</b>
 							&sdot; @{{ reply.author.username }}
 						</p>
 						<p>{{ reply.pub_date }}</p>
-	    					<span class="badge">{{ reply.num_replies }}</span>
 	    					<p class="list-group-item-text">{{ reply.message_text|truncatechars:"500" }}</p>
 					
 					</a>
@@ -65,4 +77,25 @@
 			</ul>
 		</div>
 	{% endif %}
+{% endblock %}
+{% block rightcontent %}
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			Vastatuimmat viestit
+		</div>
+		<ul class="list-group">
+			{% for reply in popular_messages %}
+				<a href="/messages/{{ reply.id }}/" class="list-group-item">
+    					<span class="badge">{{ reply.num_replies }}</span>
+					<p class="list-group-item-heading">
+						<b>{{ reply.author.first_name }} {{ reply.author.last_name }}</b>
+						&sdot; @{{ reply.author.username }}
+					</p>
+					<p>{{ reply.pub_date }}</p>
+    					<p class="list-group-item-text">{{ reply.message_text|truncatechars:"500" }}</p>
+				
+				</a>
+			{% endfor %}
+		</ul>
+	</div>
 {% endblock %}
