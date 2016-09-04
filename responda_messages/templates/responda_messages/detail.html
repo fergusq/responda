@@ -6,18 +6,9 @@
 {% endblock %}
 
 {% block content %}
-	{% if message.parent_message is not None %}
-		<ul class="list-group">
-			<a href="/messages/{{ message.parent_message.id }}/" class="list-group-item">
-				<p class="list-group-item-heading">
-					<span class="text-right" style="float:right;">{{ message.parent_message.pub_date }}</span>
-					<b>{{ message.parent_message.author.first_name }} {{ message.parent_message.author.last_name }}</b>
-					&sdot; @{{ message.parent_message.author.username }}
-				</p>
-				<p class="list-group-item-text">{{ message.parent_message.message_text|truncatechars:"100" }}</p>
-			</a>
-		</ul>
-	{% endif %}
+	{% with replies=message.parent_message.all %}
+		{% include 'responda_messages/_large_message_linklist.html' %}
+	{% endwith %}
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<p class="text-right" style="float:right;">{{ message.pub_date }}</p>
@@ -27,6 +18,7 @@
 		{% include 'responda_messages/_large_message_linklist.html' %}
 	</div>
 	{% if user.is_authenticated %}
+		<a class="btn btn-default" href="/messages/{{ message.id }}/select/" role="button">Valitse viesti</a>
 		<h2>Uusi vastaus</h2>
 		<form action="/messages/{{ message.id }}/reply/" method="POST" class="post-form">{% csrf_token %}
 			{{ form.as_p }}
@@ -68,14 +60,27 @@
 	{% endif %}
 {% endblock %}
 {% block rightcontent %}
-	<div class="panel panel-ablue">
-		<div class="panel-heading">
-			Vastatuimmat viestit
+	{% if selected_messages %}
+		<div class="panel panel-ablue">
+			<div class="panel-heading">
+				Valitut viestit
+			</div>
+			{% with replies=selected_messages %}
+			{% include 'responda_messages/_small_message_linklist.html' %}
+			{% endwith %}
 		</div>
 		<ul class="list-group">
+			<a href="/selected/reply/" class="list-group-item">Vastaa valittuihin viesteihin</a>
+			<a href="/selected/clear/?msg={{ message.id }}" class="list-group-item">Poista kaikki valinnat</a>
+		</ul>
+	{% else %}
+		<div class="panel panel-ablue">
+			<div class="panel-heading">
+				Vastatuimmat viestit
+			</div>
 			{% with replies=popular_messages %}
 			{% include 'responda_messages/_small_message_linklist.html' %}
 			{% endwith %}
-		</ul>
-	</div>
+		</div>
+	{% endif %}
 {% endblock %}

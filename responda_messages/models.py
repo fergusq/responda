@@ -9,7 +9,7 @@ class Message(models.Model):
 	message_text = models.TextField()
 	pub_date = models.DateTimeField('date published')
 	author = models.ForeignKey(AUTH_USER_MODEL)
-	parent_message = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', blank=True, null=True)
+	parent_message = models.ManyToManyField('self', related_name='replies', symmetrical=False)
 
 	def __str__(self):
 		return '"' + (self.message_text if len(self.message_text) < 30 else self.message_text[:30] + '...') + '"'
