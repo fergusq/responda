@@ -24,20 +24,7 @@
 			<b>{{ message.author.first_name }} {{ message.author.last_name }}</b> &sdot; @{{ message.author.username }}
 		</div>
 		<div class="panel-body">{{ msg_text|safe }}</div>
-		<ul class="list-group">
-			{% for reply in replies %}
-				<a href="/messages/{{ reply.id }}/" class="list-group-item">
-					<p class="list-group-item-heading">
-						<span class="text-right" style="float:right;">{{ reply.pub_date }}</span>
-						<b>{{ reply.author.first_name }} {{ reply.author.last_name }}</b>
-						&sdot; @{{ reply.author.username }}
-					</p>
-    					<span class="badge">{{ reply.num_replies }}</span>
-    					<p class="list-group-item-text">{{ reply.message_text|truncatechars:"500" }}</p>
-					
-				</a>
-			{% endfor %}
-		</ul>
+		{% include 'responda_messages/_large_message_linklist.html' %}
 	</div>
 	{% if user.is_authenticated %}
 		<h2>Uusi vastaus</h2>
@@ -57,45 +44,38 @@
 
 {% block leftcontent %}
 	{% if user.is_authenticated %}
-		<div class="panel panel-default">
+		<div class="panel panel-ablue">
 			<div class="panel-heading">
 				Uusimmat vastaukset
 			</div>
+			{% with replies=newest_replies %}
+			{% include 'responda_messages/_small_message_linklist.html' %}
+			{% endwith %}
+		</div>
+	{% else %}
+		<div class="panel panel-ablue">
+			<div class="panel-heading">
+				Tervetuloa Respondaan
+			</div>
+			<div class="panel-body">
+				Responda on uusi sosiaalisen median alusta, joka perustuu vuorovaikutukseen ja vastaamiseen.
+			</div>
 			<ul class="list-group">
-				{% for reply in newest_replies %}
-					<a href="/messages/{{ reply.id }}/" class="list-group-item">
-	    					<span class="badge">{{ reply.num_replies }}</span>
-						<p class="list-group-item-heading">
-							<b>{{ reply.author.first_name }} {{ reply.author.last_name }}</b>
-							&sdot; @{{ reply.author.username }}
-						</p>
-						<p>{{ reply.pub_date }}</p>
-	    					<p class="list-group-item-text">{{ reply.message_text|truncatechars:"500" }}</p>
-					
-					</a>
-				{% endfor %}
+				<a href="/login/" class="list-group-item">Kirjaudu sisään</a>
+				<a href="/register/" class="list-group-item">Luo tunnus</a>
 			</ul>
 		</div>
 	{% endif %}
 {% endblock %}
 {% block rightcontent %}
-	<div class="panel panel-default">
+	<div class="panel panel-ablue">
 		<div class="panel-heading">
 			Vastatuimmat viestit
 		</div>
 		<ul class="list-group">
-			{% for reply in popular_messages %}
-				<a href="/messages/{{ reply.id }}/" class="list-group-item">
-    					<span class="badge">{{ reply.num_replies }}</span>
-					<p class="list-group-item-heading">
-						<b>{{ reply.author.first_name }} {{ reply.author.last_name }}</b>
-						&sdot; @{{ reply.author.username }}
-					</p>
-					<p>{{ reply.pub_date }}</p>
-    					<p class="list-group-item-text">{{ reply.message_text|truncatechars:"500" }}</p>
-				
-				</a>
-			{% endfor %}
+			{% with replies=popular_messages %}
+			{% include 'responda_messages/_small_message_linklist.html' %}
+			{% endwith %}
 		</ul>
 	</div>
 {% endblock %}

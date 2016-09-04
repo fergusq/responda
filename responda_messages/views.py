@@ -11,10 +11,25 @@ from django.db.models import F, Count
 import markdown
 import bleach
 
-def compileMd(text): return bleach.clean(markdown.markdown(text), tags=['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li', 'ol', 'p', 'strong', 'table', 'td', 'tr', 'tt', 'ul'])
+def compileMd(text):
+	return bleach.clean(markdown.markdown(text), tags=[
+		'a', 'abbr', 'acronym',
+		'b', 'blockquote',
+		'code',
+		'em',
+		'i', 'img',
+		'li',
+		'ol',
+		'p',
+		'strong',
+		'table', 'td', 'tr', 'tt',
+		'ul'])
 
 from .models import Message
 from .forms import ReplyForm
+
+def getReplies(request):
+	return Message.objects.exclude(author=request.user).filter(parent_message__author=request.user).annotate(num_replies=Count('replies')).order_by('-pub_date')
 
 # Create your views here.
 
@@ -29,7 +44,7 @@ def detail(request, msg_id):
 	replies = Message.objects.filter(parent_message=msg).annotate(num_replies=Count('replies')).order_by('-num_replies', '-pub_date')
 	
 	if request.user.is_authenticated:
-		newest_replies = Message.objects.exclude(author=request.user).filter(parent_message__author=request.user).annotate(num_replies=Count('replies')).order_by('-pub_date')[:5]
+		newest_replies = getReplies(request)[:5]
 	else:
 		newest_replies = []
 	
@@ -43,6 +58,12 @@ def detail(request, msg_id):
 		'newest_replies': newest_replies,
 		'popular_messages': popular_messages,
 		'form': form
+		})
+
+@login_required
+def replies(request):
+	return render(request, 'responda_messages/replies.html', {
+		'replies': getReplies(request)
 		})
 
 @login_required
