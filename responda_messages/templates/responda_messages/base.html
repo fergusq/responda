@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<link rel="stylesheet" href="{% static 'css/responda.css' %}">
+		{% block extra_head %}
+		{% endblock %}
 	</head>
 	<body>
 		<nav class="navbar navbar-default">
@@ -21,7 +23,7 @@
 					</button>
 					<a class="navbar-brand" href="/messages/1/">Responda</a>
 				</div>
-				<div id="main-navbar" class="collapse navbar-collapse">
+				<div id="main-navbar" class="collapse navbar-collapse no-transition">
 					<ul class="nav navbar-nav">
 						<li><a href="/messages/8/">Tietoa</a></li>
 					</ul>
@@ -39,14 +41,20 @@
 				</div>
 			</div>
 		</nav>
-		<div class="content container">
+		<div class="content container-fluid">
 			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-8">
+				<div class="col-md-6 col-md-push-3">
 					{% block content %}
 					{% endblock %}
 				</div>
-				<div class="col-md-2"></div>
+				<div class="col-md-3 col-md-pull-6">
+					{% block leftcontent %}
+					{% endblock %}
+				</div>
+				<div class="col-md-3">
+					{% block rightcontent %}
+					{% endblock %}
+				</div>
 			</div>
 		</div>
 	</body>

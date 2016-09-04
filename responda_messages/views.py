@@ -27,11 +27,18 @@ def detail(request, msg_id):
 	except Message.DoesNotExist:
 		raise Http404("Message does not exist")
 	replies = Message.objects.filter(parent_message=msg).annotate(num_replies=Count('replies')).order_by('-pub_date').order_by('-num_replies')
+	
+	if request.user.is_authenticated:
+		newest_replies = Message.objects.exclude(author=request.user).filter(parent_message__author=request.user).order_by('-pub_date')[:5]
+	else:
+		newest_replies = []
+	
 	form = ReplyForm()
 	return render(request, 'responda_messages/detail.html', {
 		'message': msg,
 		'msg_text': compileMd(msg.message_text),
 		'replies': replies,
+		'newest_replies': newest_replies,
 		'form': form
 		})
 
@@ -53,7 +60,7 @@ def reply(request, msg_id):
 	raise Http404('invalid use of reply action')
 
 def register(request):
-	if request.method == "POST":
+	if request.method == "POST" and not request.user.is_authenticated:
 		username = request.POST['username']
 		password = request.POST['password']
 		email = request.POST['email']

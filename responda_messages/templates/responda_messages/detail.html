@@ -28,7 +28,7 @@
 						&sdot; @{{ reply.author.username }}
 					</p>
     					<span class="badge">{{ reply.num_replies }}</span>
-    					<p class="list-group-item-text">{{ reply.message_text|truncatechars:"100" }}</p>
+    					<p class="list-group-item-text">{{ reply.message_text|truncatechars:"500" }}</p>
 					
 				</a>
 			{% endfor %}
@@ -40,5 +40,29 @@
 			{{ form.as_p }}
 			<button type="submit" class="save btn btn-default">Lähetä!</button>
 		</form>
+	{% endif %}
+{% endblock %}
+
+{% block leftcontent %}
+	{% if user.is_authenticated %}
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Uusimmat vastaukset
+			</div>
+			<ul class="list-group">
+				{% for reply in newest_replies %}
+					<a href="/messages/{{ reply.id }}/" class="list-group-item">
+						<p class="list-group-item-heading">
+							<b>{{ reply.author.first_name }} {{ reply.author.last_name }}</b>
+							&sdot; @{{ reply.author.username }}
+						</p>
+						<p>{{ reply.pub_date }}</p>
+	    					<span class="badge">{{ reply.num_replies }}</span>
+	    					<p class="list-group-item-text">{{ reply.message_text|truncatechars:"500" }}</p>
+					
+					</a>
+				{% endfor %}
+			</ul>
+		</div>
 	{% endif %}
 {% endblock %}
